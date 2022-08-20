@@ -1,5 +1,4 @@
 """Generate Markov text from text files."""
-from cgitb import text
 import sys
 from random import choice
 
@@ -44,7 +43,6 @@ def make_chains(text_string):
 
     chains = {}
 
-    text_string = open_and_read_file()
     text_string = text_string.split()
 
     for i in range (len(text_string) - 1):
@@ -58,10 +56,11 @@ def make_chains(text_string):
                 chains[temp_key] += [word3]
         except IndexError:
             continue
-    print(chains)
+    #print(chains)
 
     return chains
 
+make_chains(open_and_read_file())
 
 def make_text(chains):
     """Return text from chains."""
@@ -69,19 +68,37 @@ def make_text(chains):
     words = []
 
     # your code goes here
+    #while True:
+    random_key = choice(list(chains.keys()))
+    word1, word2 = random_key
+    words.append(word1)
+    words.append(word2)
+    next_word = choice(list(chains[random_key]))
+    words.append(next_word)
+    new_tuple = (words[1], words[2])
 
-    return ' '.join(words)
+    for key in chains:
+        if key == new_tuple:
+            next_word = choice(list(chains[new_tuple]))
+            words.append(next_word)
 
 
-input_path = 'green-eggs.txt'
+    print(words)
 
-# Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
 
-# Get a Markov chain
-chains = make_chains(input_text)
+  #  return ' '.join(words)
 
-# Produce random text
-random_text = make_text(chains)
+make_text(make_chains(open_and_read_file()))
 
-print(random_text)
+# input_path = 'green-eggs.txt'
+
+# # Open the file and turn it into one long string
+# input_text = open_and_read_file(input_path)
+
+# # Get a Markov chain
+# chains = make_chains(input_text)
+
+# # Produce random text
+# random_text = make_text(chains)
+
+# print(random_text)
