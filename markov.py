@@ -10,18 +10,16 @@ def open_and_read_file(file_path = sys.argv[1]):
     the file's contents as one string of text.
     """
     contents = open(file_path).read()
-    # print(contents)
 
     return contents
 
-# open_and_read_file()
 
 def make_chains(text_string):
     """Take input text as string; return dictionary of Markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
     and the value would be a list of the word(s) that follow those two
-    words in the input text.
+    text in the input text.
 
     For example:
 
@@ -32,7 +30,7 @@ def make_chains(text_string):
         >>> sorted(chains.keys())
         [('hi', 'there'), ('mary', 'hi'), ('there', 'mary')]
 
-    Each item in chains is a list of all possible following words:
+    Each item in chains is a list of all possible following text:
 
         >>> chains[('hi', 'there')]
         ['mary', 'juanita']
@@ -42,63 +40,52 @@ def make_chains(text_string):
     """
 
     chains = {}
-
+    # [ 1,2,3,4,5]
     text_string = text_string.split()
 
-    for i in range (len(text_string) - 1):
-        try:
-            word1, word2, word3 = text_string[i], text_string[i + 1], text_string[i + 2]
-            temp_key = (word1, word2)
+    for i in range (len(text_string) - 2):
+        word1, word2, word3 = text_string[i], text_string[i + 1], text_string[i + 2]
+        temp_key = (word1, word2)
 
-            if temp_key not in chains:
-                chains[temp_key] = [word3]
-            elif temp_key in chains:
-                chains[temp_key] += [word3]
-        except IndexError:
-            continue
-    #print(chains)
+        if temp_key not in chains:
+            chains[temp_key] = [word3]
+        elif temp_key in chains:
+            chains[temp_key].append(word3)
 
     return chains
 
-make_chains(open_and_read_file())
 
 def make_text(chains):
     """Return text from chains."""
 
-    words = []
+    text = []
 
-    # your code goes here
-    #while True:
-    random_key = choice(list(chains.keys()))
-    word1, word2 = random_key
-    words.append(word1)
-    words.append(word2)
-    next_word = choice(list(chains[random_key]))
-    words.append(next_word)
-    new_tuple = (words[1], words[2])
+    initial_key = choice(list(chains.keys()))
+    text.append(initial_key[0])
+    text.append(initial_key[1])
 
-    for key in chains:
-        if key == new_tuple:
-            next_word = choice(list(chains[new_tuple]))
-            words.append(next_word)
+    next_word = choice(list(chains[initial_key]))
+    text.append(next_word)
+
+    current_key = (text[-2], text[-1])
+
+    while current_key in chains:
+
+        next_word = choice(list(chains[current_key]))
+        text.append(next_word)
+
+        current_key = (text[-2], text[-1])
+
+    return ' '.join(text)
 
 
-    print(words)
+# Open the file and turn it into one long string
+input_text = open_and_read_file()
 
+# Get a Markov chain
+chains = make_chains(input_text)
 
-  #  return ' '.join(words)
+# Produce random text
+random_text = make_text(chains)
 
-make_text(make_chains(open_and_read_file()))
-
-# input_path = 'green-eggs.txt'
-
-# # Open the file and turn it into one long string
-# input_text = open_and_read_file(input_path)
-
-# # Get a Markov chain
-# chains = make_chains(input_text)
-
-# # Produce random text
-# random_text = make_text(chains)
-
-# print(random_text)
+print(random_text)
