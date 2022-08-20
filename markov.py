@@ -1,19 +1,21 @@
 """Generate Markov text from text files."""
-
+from cgitb import text
+import sys
 from random import choice
 
 
-def open_and_read_file(file_path):
+def open_and_read_file(file_path = sys.argv[1]):
     """Take file path as string; return text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
+    contents = open(file_path).read()
+    # print(contents)
 
-    # your code goes here
+    return contents
 
-    return 'Contents of your file as one long string'
-
+# open_and_read_file()
 
 def make_chains(text_string):
     """Take input text as string; return dictionary of Markov chains.
@@ -42,7 +44,21 @@ def make_chains(text_string):
 
     chains = {}
 
-    # your code goes here
+    text_string = open_and_read_file()
+    text_string = text_string.split()
+
+    for i in range (len(text_string) - 1):
+        try:
+            word1, word2, word3 = text_string[i], text_string[i + 1], text_string[i + 2]
+            temp_key = (word1, word2)
+
+            if temp_key not in chains:
+                chains[temp_key] = [word3]
+            elif temp_key in chains:
+                chains[temp_key] += [word3]
+        except IndexError:
+            continue
+    print(chains)
 
     return chains
 
